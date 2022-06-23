@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-ingress
+  namespace: apps
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: a85f867e9a10b4bb38e37f96047f0b48-9c2009c017d2525a.elb.ap-southeast-3.amazonaws.com
+    http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: svc-a
+              port:
+                number: 8080
+        - path: /svc-a
+          pathType: Prefix
+          backend:
+            service:
+              name: svc-a
+              port:
+                number: 8080
+        - path: /svc-b
+          pathType: Prefix
+          backend:
+            service:
+              name: svc-b
+              port:
+                number: 8080

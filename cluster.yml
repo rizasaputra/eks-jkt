@@ -1,0 +1,20 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: eks-jkt-121
+  region: ap-southeast-3
+  version: "1.21"
+  tags:
+    karpenter.sh/discovery: eks-jkt-121
+
+managedNodeGroups:
+- name: mng-m5large
+  desiredCapacity: 1
+  maxSize: 3
+  minSize: 1
+  instanceType: m5.large
+  labels:
+    alpha.eksctl.io/cluster-name: eks-jkt-121
+    alpha.eksctl.io/nodegroup-name: mng-m5large
+    intent: control-apps

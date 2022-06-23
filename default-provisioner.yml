@@ -1,0 +1,21 @@
+apiVersion: karpenter.sh/v1alpha5
+kind: Provisioner
+metadata:
+  name: default
+spec:
+  labels:
+    intent: apps
+  requirements:
+    - key: karpenter.sh/capacity-type
+      operator: In
+      values: ["spot", "on-demand"]
+  limits:
+    resources:
+      cpu: 1000
+  provider:
+    subnetSelector:
+      karpenter.sh/discovery: eks-jkt-121
+    securityGroupSelector:
+      Name: "*ClusterSharedNodeSecurityGroup"
+      karpenter.sh/discovery: eks-jkt-121
+  ttlSecondsAfterEmpty: 30

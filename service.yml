@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: apps
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: svc-a
+  namespace: apps
+  labels:
+    app: svc-a
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: svc-a
+  template:
+    metadata:
+      labels:
+        app: svc-a
+    spec:
+      nodeSelector:
+        intent: apps
+      containers:
+        - name: svc-a
+          image: nginxdemos/nginx-hello
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: svc-b
+  namespace: apps
+  labels:
+    app: svc-b
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: svc-b
+  template:
+    metadata:
+      labels:
+        app: svc-b
+    spec:
+      nodeSelector:
+        intent: apps
+      containers:
+        - name: svc-b
+          image: nginxdemos/nginx-hello
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: svc-a
+  namespace: apps
+spec:
+  selector:
+    app: svc-a
+  ports:
+    - port: 8080 # Default port for image
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: svc-b
+  namespace: apps
+spec:
+  selector:
+    app: svc-b
+  ports:
+    - port: 8080 # Default port for image
