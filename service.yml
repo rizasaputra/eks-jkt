@@ -23,7 +23,7 @@ spec:
         app: svc-a
     spec:
       nodeSelector:
-        intent: apps
+        purpose: apps
       containers:
         - name: svc-a
           image: nginxdemos/nginx-hello
@@ -48,7 +48,7 @@ spec:
         app: svc-b
     spec:
       nodeSelector:
-        intent: apps
+        purpose: apps
       containers:
         - name: svc-b
           image: nginxdemos/nginx-hello

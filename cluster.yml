@@ -1,20 +1,40 @@
+---
 apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
-
 metadata:
-  name: eks-jkt-121
+  name: eks-jkt-128
   region: ap-southeast-3
-  version: "1.21"
+  version: "1.28"
   tags:
-    karpenter.sh/discovery: eks-jkt-121
+    karpenter.sh/discovery: eks-jkt-128
+
+iam:
+  withOIDC: true
+  serviceAccounts:
+  - metadata:
+      name: karpenter
+      namespace: karpenter
+    roleName: eks-jkt-128-karpenter
+    attachPolicyARNs:
+    - arn:aws:iam::620583337209:policy/KarpenterControllerPolicy-eks-jkt-128
+    roleOnly: true
+
+iamIdentityMappings:
+- arn: "arn:aws:iam::620583337209:role/KarpenterNodeRole-eks-jkt-128"
+  username: system:node:{{EC2PrivateDNSName}}
+  groups:
+  - system:bootstrappers
+  - system:nodes
 
 managedNodeGroups:
-- name: mng-m5large
-  desiredCapacity: 1
-  maxSize: 3
-  minSize: 1
-  instanceType: m5.large
+- instanceType: m5.xlarge
+  amiFamily: AmazonLinux2
+  name: eks-jkt-128-mng
+  desiredCapacity: 2
+  minSize: 2
+  maxSize: 10
+  iam:
+    withAddonPolicies:
+      cloudWatch: true
   labels:
-    alpha.eksctl.io/cluster-name: eks-jkt-121
-    alpha.eksctl.io/nodegroup-name: mng-m5large
-    intent: control-apps
+    purpose: control-apps

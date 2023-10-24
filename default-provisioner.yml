@@ -4,18 +4,31 @@ metadata:
   name: default
 spec:
   labels:
-    intent: apps
+    purpose: apps
   requirements:
-    - key: karpenter.sh/capacity-type
+    - key: "karpenter.k8s.aws/instance-category"
+      operator: In
+      values: ["c", "m", "r"]
+    - key: "karpenter.k8s.aws/instance-cpu"
+      operator: In
+      values: ["2", "4"]
+    - key: "karpenter.sh/capacity-type" # If not included, the webhook for the AWS cloud provider will default to on-demand
       operator: In
       values: ["spot", "on-demand"]
   limits:
     resources:
-      cpu: 1000
-  provider:
-    subnetSelector:
-      karpenter.sh/discovery: eks-jkt-121
-    securityGroupSelector:
-      Name: "*ClusterSharedNodeSecurityGroup"
-      karpenter.sh/discovery: eks-jkt-121
-  ttlSecondsAfterEmpty: 30
+      cpu: "1000"
+  providerRef:
+    name: default
+  consolidation:
+    enabled: true
+---
+apiVersion: karpenter.k8s.aws/v1alpha1
+kind: AWSNodeTemplate
+metadata:
+  name: default
+spec:
+  subnetSelector:
+    karpenter.sh/discovery: eks-jkt-128
+  securityGroupSelector:
+    kubernetes.io/cluster/eks-jkt-128: owned
